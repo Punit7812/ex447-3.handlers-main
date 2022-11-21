@@ -1,0 +1,91 @@
+
+Scenario -1
+-----------------
+####playbook1.yml is for this scenario
+configure web server
+
+clone git file https://github.com/rohitmeachu312/ex447-3.handlers.git
+
+install http-alias packages. 
+If its get installed then only restart the httpd service or
+if the package is already installed dont start the httpd service
+
+Scenario-2
+------------------
+####playbook2.yml is for this scenario
+- clone the Git Repository  https://github.com/rohitmeachu312/ex447-3.handlers.git
+- update the repository 
+- when  file update the system state then httpd should  restart 
+
+Answer:
+=================
+git clone https://github.com/rohitmeachu312/ex447-3.handlers.git
+
+cd ex447-3.handlers.git/
+
+
+
+Scenario-1
+-------------
+vim playbook1.yml
+
+
+---
+- name: example answer 
+  hosts: node1.lab.example.com
+  become: true
+  remote_user: devops
+  tasks:
+    - name: install httpd alias packages
+      yum:
+        name: httpd-tools
+        state: latest.
+      
+    - name: Generate a basic homepage from jinja2 template
+      copy:
+        src: alias.conf
+        dest: /var/www/html/index.html
+        force: yes
+      notify: start the apache web server
+
+  handlers:
+
+    - name: Start the apache web server
+      service:
+        name: httpd
+        state: restarted
+        enabled: yes
+        
+ ==========================================================================================
+Scenario-2
+-------------
+
+vim playbook2.yml
+
+ //playbook might already exists in exam you have to add handlers tasks
+- hosts:  all
+  become: true
+  tasks:
+    - copy:
+        content:  “hello world”
+        dest:  /tmp/abc.txt
+      notify:  restart_apache
+  handlers:
+    - name: restart apache
+      service: 
+        name:   httpd
+        state:  restarted
+        enabled: yes
+        
+// modify the playbook's as asked in exam
+
+
+
+
+
+ansible-playbook apache-setup.yml       //Run playbook
+
+git add .
+git commit -m 'commit name'
+git push origin master
+cd ..
